@@ -43,11 +43,9 @@ public class AssetManagementSystem {
 		nextAssetId = 1;
 		
 		//Initially adding asset details
-//		Vendor vendor1 = vendorDetails.get(1);
 		Asset asset1 = new Asset(nextAssetId, "Hardware", "Laptop", "Asset 1", "15735", "37356", 100000, "10-05-2020", "08-06-2022", "Rental", vendor1);
 		assetDetails.put(nextAssetId, asset1);
 		nextAssetId++;
-//		Vendor vendor2 = vendorDetails.get(2);
 		Asset asset2 = new Asset(nextAssetId, "Hardware", "mobile", "Asset 2", "54543", "9875", 15000, "24-02-2021", "02-07-2025", "Owned", vendor2);
 		assetDetails.put(nextAssetId, asset2);
 		nextAssetId++;
@@ -55,113 +53,151 @@ public class AssetManagementSystem {
 
 	public void addVendor(String vendorName, String phoneNo, String email, String contactPerson, String address,
 			String gstin) {
-		Vendor vendor = new Vendor(nextVendorId, vendorName, phoneNo, email, contactPerson, address, gstin);
-		vendorDetails.put(nextVendorId, vendor);
-		nextVendorId++;
-		System.out.println("Vendor details added successfully. Vendor ID: " + vendor.getId());
+		try {
+			Vendor vendor = new Vendor(nextVendorId, vendorName, phoneNo, email, contactPerson, address, gstin);
+			vendorDetails.put(nextVendorId, vendor);
+			nextVendorId++;
+			System.out.println("Vendor details added successfully. Vendor ID: " + vendor.getId());
+		}catch(Exception e) {
+			System.out.println("An error occurred while adding the vendor: " + e.getMessage());
+		}
 	}
 
 	public void removeVendor(int vendorId) {
-		if (vendorDetails.containsKey(vendorId)) {
-			vendorDetails.remove(vendorId);
-			System.out.println("Vendor details removed successfully.");
-		} else {
-			System.out.println("Vendor " + vendorId + " not found.");
+		try {
+			if (vendorDetails.containsKey(vendorId)) {
+				vendorDetails.remove(vendorId);
+				System.out.println("Vendor details removed successfully.");
+			} else {
+				throw new VendorNotFoundException("Vendor " + vendorId + " not found.");
+			}
+		}catch(VendorNotFoundException e) {
+			 System.out.println("An error occurred while removig the vendor: " + e.getMessage());
 		}
 	}
 
 	public void displayVendorDetails() {
-		if (vendorDetails.isEmpty()) {
-			System.out.println("No vendor details available.");
-		} else {
-			System.out.println("Vendor Details:");
-			for (Vendor vendor : vendorDetails.values()) {
-				System.out.println(vendor);
+		try {
+			if (vendorDetails.isEmpty()) {
+				throw new VendorNotFoundException("No vendor details available.");
+			} else {
+				System.out.println("Vendor Details:");
+				for (Vendor vendor : vendorDetails.values()) {
+					System.out.println(vendor);
+				}
 			}
+		}catch(VendorNotFoundException e) {
+			 System.out.println("An error occurred while displaying the vendor: " + e.getMessage());
 		}
 	}
 
 	public void addEmployee(String name, String department, String phone, String email) {
-		Employee employee = new Employee(nextEmployeeId, name, department, phone, email);
-		employeeDetails.put(nextEmployeeId, employee);
-		nextEmployeeId++;
-		System.out.println("Employee added successfully. Employee ID: " + employee.getId());
+		try {
+			Employee employee = new Employee(nextEmployeeId, name, department, phone, email);
+			employeeDetails.put(nextEmployeeId, employee);
+			nextEmployeeId++;
+			System.out.println("Employee added successfully. Employee ID: " + employee.getId());
+		}catch(Exception e) {
+			 System.out.println("An error occurred while adding the employee: " + e.getMessage());
+		}
 	}
 
 	public void removeEmployee(int employeeId) {
-		if (employeeDetails.containsKey(employeeId)) {
-			employeeDetails.remove(employeeId);
-			System.out.println("Employee with ID " + employeeId + " has been removed.");
-		} else {
-			System.out.println("Employee with ID " + employeeId + " not found.");
+		try {
+			if (employeeDetails.containsKey(employeeId)) {
+				employeeDetails.remove(employeeId);
+				System.out.println("Employee with ID " + employeeId + " has been removed.");
+			} else {
+				throw new EmployeeNotFoundException("Employee with ID " + employeeId + " not found.");
+			}
+		}catch(EmployeeNotFoundException e) {
+			System.out.println("An error occurred while removing the employee: " + e.getMessage());
 		}
 	}
 
 	public void displayEmployees() {
-		if (employeeDetails.isEmpty()) {
-			System.out.println("Employee database is empty.");
-		} else {
-			System.out.println("Employee Database:");
-			for (Employee employee : employeeDetails.values()) {
-				System.out.println(employee);
+		try {
+			if (employeeDetails.isEmpty()) {
+				throw new EmployeeNotFoundException("Employee database is empty.");
+			} else {
+				System.out.println("Employee Database:");
+				for (Employee employee : employeeDetails.values()) {
+					System.out.println(employee);
+				}
 			}
+		}catch(EmployeeNotFoundException e) {
+			System.out.println("An error occurred while displaying the employee details: " + e.getMessage());
 		}
 	}
 
 	public void addAsset(String category, String type, String name, String modelNumber, String serialNumber,
 			double purchasePrice, String purchaseDate, String warrantyDate, String purchaseType, int vendorId) {
-		if (vendorDetails.containsKey(vendorId)) {
-			Vendor vendor = vendorDetails.get(vendorId);
-			System.out.println("vendor" + vendor);
-			Asset asset = new Asset(nextAssetId, category, type, name, modelNumber, serialNumber, purchasePrice,
-					purchaseDate, warrantyDate, purchaseType, vendor);
-			assetDetails.put(nextAssetId, asset);
-			nextAssetId++;
-			System.out.println("Asset added successfully. Asset ID: " + asset.getId());
-		}else {
-			System.out.println("Vendor not found");
-		}
+		try {
+            if (vendorDetails.containsKey(vendorId)) {
+                Vendor vendor = vendorDetails.get(vendorId);
+                Asset asset = new Asset(nextAssetId, category, type, name, modelNumber, serialNumber, purchasePrice,
+                                        purchaseDate, warrantyDate, purchaseType, vendor);
+                assetDetails.put(nextAssetId, asset);
+                nextAssetId++;
+                System.out.println("Asset added successfully. Asset ID: " + asset.getId());
+            } else {
+                throw new VendorNotFoundException("Vendor not found");
+            }
+        } catch (VendorNotFoundException e) {
+            System.out.println("An error occurred while adding the asset: " + e.getMessage());
+        }
 	}
 
 	public void removeAsset(int assetId) {
-		if (assetDetails.containsKey(assetId)) {
-			assetDetails.remove(assetId);
-			System.out.println("Asset ID " + assetId + " has been removed.");
-		} else {
-			System.out.println("Asset ID " + assetId + " not found.");
+		try {
+			if (assetDetails.containsKey(assetId)) {
+				assetDetails.remove(assetId);
+				System.out.println("Asset ID " + assetId + " has been removed.");
+			} else {
+				throw new AssetNotFoundException("Asset ID " + assetId + " not found.");
+			}
+		}catch(AssetNotFoundException e) {
+			 System.out.println("An error occurred while removing the asset: " + e.getMessage());
 		}
 	}
 	
 	public void displayAssets() {
-	    if (assetDetails.isEmpty()) {
-	        System.out.println("Asset database is empty.");
-	    } else {
-	        System.out.println("Asset Database:");
-	        for (Asset asset : assetDetails.values()) {
-	            System.out.println(asset);
-	            if (asset.getEmployee() != null) {
-	                System.out.println("Assigned to: " + asset.getEmployee().getName());
-	            } else {
-	                System.out.println("Not assigned to any employee");
-	            }
-	            System.out.println();
-	        }
-	    }
+		try {
+			 if (assetDetails.isEmpty()) {
+				 throw new AssetNotFoundException("Asset database is empty.");
+			 }
+			 else {
+				 System.out.println("Asset Database:");
+			     for (Asset asset : assetDetails.values()) {
+			         if (asset.getEmployee() != null) {
+			        	 System.out.println("Assigned to: " + asset.getEmployee().getName());
+			         } else {
+			             System.out.println("Not assigned to any employee");
+			         }
+			      }
+			  }
+		}catch(AssetNotFoundException e) {
+			System.out.println("An error occurred while displaying the asset details: " + e.getMessage());
+		}
 	}
 	
 	public void assignAssetToEmployee(int assetId, int employeeId) {
-	    if (assetDetails.containsKey(assetId)) {
-	        Asset asset = assetDetails.get(assetId);
-	        if (employeeDetails.containsKey(employeeId)) {
-	            Employee employee = employeeDetails.get(employeeId);
-	            asset.setEmployee(employee);
-	            System.out.println("Asset ID " + assetId + " assigned to employee ID " + employeeId);
-	        } else {
-	            System.out.println("Employee ID " + employeeId + " not found.");
-	        }
-	    } else {
-	        System.out.println("Asset ID " + assetId + " not found.");
-	    }
+	    try {
+            if (assetDetails.containsKey(assetId)) {
+                Asset asset = assetDetails.get(assetId);
+                if (employeeDetails.containsKey(employeeId)) {
+                    Employee employee = employeeDetails.get(employeeId);
+                    asset.setEmployee(employee);
+                    System.out.println("Asset ID " + assetId + " assigned to employee ID " + employeeId);
+                } else {
+                    throw new EmployeeNotFoundException("Employee ID not found");
+                }
+            } else {
+                throw new AssetNotFoundException("Asset ID not found");
+            }
+        } catch (AssetNotFoundException | EmployeeNotFoundException e) {
+            System.out.println("An error occurred while assigning the asset: " + e.getMessage());
+        }
 	}
 
 
@@ -399,9 +435,27 @@ class Asset {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	@Override
 	public String toString() {
 		return "Asset ID: " + id + "\nCategory: " + category + "\nType: " + type + "\nName: " + name
 				+ "\nModel Number: " + modelNumber + "\nSerial Number: " + serialNumber + "\nPurchase Price: "
 				+ purchasePrice + "\nPurchase Date: " + purchaseDate + "\nWarranty Date: " + warrantyDate + "\nPurchase Type: " + purchaseType + "\nVendor Id: " + vendorId;
 	}
+}
+class VendorNotFoundException extends Exception {
+    public VendorNotFoundException(String message) {
+        super(message);
+    }
+}
+
+class AssetNotFoundException extends Exception {
+    public AssetNotFoundException(String message) {
+        super(message);
+    }
+}
+
+class EmployeeNotFoundException extends Exception {
+    public EmployeeNotFoundException(String message) {
+        super(message);
+    }
 }
