@@ -169,6 +169,7 @@ public class AssetManagementSystem {
 			 else {
 				 System.out.println("Asset Database:");
 			     for (Asset asset : assetDetails.values()) {
+			    	 System.out.println(asset);
 			         if (asset.getEmployee() != null) {
 			        	 System.out.println("Assigned to: " + asset.getEmployee().getName());
 			         } else {
@@ -332,7 +333,6 @@ class Vendor {
 
 	public Vendor(int id, String vendorName, String phoneNo, String email, String contactPerson, String address,
 			String gstin) {
-		System.out.println("vendor constructor");
 		this.id = id;
 		this.vendorName = vendorName;
 		this.phoneNo = phoneNo;
