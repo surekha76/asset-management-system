@@ -1,6 +1,7 @@
 package asset.management;
 
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class AssetManagementSystem {
@@ -205,7 +206,13 @@ public class AssetManagementSystem {
 	public static void main(String[] args) {
 		AssetManagementSystem assetManagement = new AssetManagementSystem();
 		Scanner scanner = new Scanner(System.in);
-
+		int choice = 0;
+		int vendorId = 0;
+		int employeeId = 0;
+		double purchasePrice = 0;
+		int assetId = 0; 
+		int assignAssetId = 0;
+		int assignEmployeeId = 0;
 		while (true) {
 			System.out.println("Asset Management");
 			System.out.println("1. Add Vendor");
@@ -220,13 +227,17 @@ public class AssetManagementSystem {
 			System.out.println("10. Assign the assets to employee");
 			System.out.println("11. Exit");
 			System.out.print("Enter your choice: ");
-
-			int choice = scanner.nextInt();
-			scanner.nextLine(); // Consume newline character
-
+			
+			try {
+				choice = scanner.nextInt();
+			}catch (InputMismatchException e) {
+                scanner.nextLine(); // Clear the invalid input from the scanner
+                System.out.println("Invalid choice. Please enter a valid number: "+e);
+                continue; // Continue the loop to ask for input again
+            }
+			scanner.nextLine();
 			switch (choice) {
 			case 1:
-				System.out.println("Enter Vendor Details:");
 				System.out.print("Vendor Name: ");
 				String vendorName = scanner.nextLine();
 				System.out.print("Phone No: ");
@@ -242,14 +253,20 @@ public class AssetManagementSystem {
 				assetManagement.addVendor(vendorName, phoneNo, email, contactPerson, address, gstin);
 				break;
 			case 2:
-				System.out.print("Enter vendor name: ");
-				int vendorId = scanner.nextInt();
-				assetManagement.removeVendor(vendorId);
+				System.out.print("Enter vendor Id to remove: ");
+				try {
+			        vendorId = scanner.nextInt();
+			        assetManagement.removeVendor(vendorId);
+			    } catch (InputMismatchException e) {
+			        scanner.nextLine(); // Clear the invalid input from the scanner
+			        System.out.println("Invalid vendor Id. Please enter a valid number: "+e);
+			    }
 				break;
 			case 3:
 				assetManagement.displayVendorDetails();
 				break;
 			case 4:
+//				System.out.println(scanner.nextLine());
 				System.out.print("Enter employee name: ");
 				String name = scanner.nextLine();
 				System.out.print("Enter department: ");
@@ -262,9 +279,13 @@ public class AssetManagementSystem {
 				break;
 			case 5:
 				System.out.print("Enter employee ID to remove: ");
-				int employeeId = scanner.nextInt();
-				scanner.nextLine(); // Consume newline character
-				assetManagement.removeEmployee(employeeId);
+				try {
+					employeeId = scanner.nextInt();
+					assetManagement.removeEmployee(employeeId);
+				}catch(InputMismatchException e) {
+					 scanner.nextLine(); // Clear the invalid input from the scanner
+				     System.out.println("Invalid Employee Id. Please enter a valid number: "+e);
+				}
 				break;
 			case 6:
 				assetManagement.displayEmployees();
@@ -281,8 +302,13 @@ public class AssetManagementSystem {
 				System.out.print("Enter serial number: ");
 				String serialNumber = scanner.nextLine();
 				System.out.print("Enter purchase price: ");
-				double purchasePrice = scanner.nextDouble();
-				scanner.nextLine(); // Consume newline character
+				try {
+					purchasePrice = scanner.nextDouble();
+					scanner.nextLine();
+				}catch(InputMismatchException e) {
+					scanner.nextLine(); // clear the invalid input from the scanner
+					System.out.println("Invalid Purchase Price. Please enter a valid price: "+e);
+				}
 				System.out.print("Enter purchase date: ");
 				String purchaseDate = scanner.nextLine();
 				System.out.print("Enter warranty date: ");
@@ -290,24 +316,47 @@ public class AssetManagementSystem {
 				System.out.println("Enter purchase type: "); // Owned, rented, leased
 				String purchaseType = scanner.nextLine();
 				System.out.print("Enter vendor Id: ");
-				vendorId = scanner.nextInt();
+				try {
+					vendorId = scanner.nextInt();
+					scanner.nextLine();
+				}catch(InputMismatchException e) {
+					scanner.nextLine(); // clear the invalid input from the scanner
+					System.out.println("Invalid Vendor Id. Please Enter a valid number: "+e);
+				}
 				assetManagement.addAsset(category, type, asset_name, modelNumber, serialNumber, purchasePrice, purchaseDate,
 						warrantyDate, purchaseType, vendorId);
 				break;
 			case 8:
 				System.out.print("Enter Asset ID to remove: ");
-				int assetId = scanner.nextInt();
+				try {
+					assetId = scanner.nextInt();
+					assetManagement.removeAsset(assetId);
+				}catch(InputMismatchException e) {
+					scanner.nextLine(); // clear the invalid input from the scanner
+					System.out.println("Invalid Asset Id. Please enter valid number: "+e);
+				}
 				scanner.nextLine(); // Consume newline character
-				assetManagement.removeAsset(assetId);
 				break;
 			case 9:
 				assetManagement.displayAssets();
 				break;
 			case 10:
 			    System.out.print("Enter Asset ID to assign: ");
-			    int assignAssetId = scanner.nextInt();
+			    try {
+			    	assignAssetId = scanner.nextInt();
+			    	scanner.nextLine();
+			    }catch(InputMismatchException e) {
+			    	scanner.nextLine(); // clear the invalid input from the scanner
+					System.out.println("Invalid Asset Id. Please enter valid number: "+e);
+			    }
 			    System.out.print("Enter Employee ID to assign: ");
-			    int assignEmployeeId = scanner.nextInt();
+			    try {
+			    	assignEmployeeId = scanner.nextInt();
+			    	scanner.nextLine();
+			    }catch(InputMismatchException e) {
+			    	scanner.nextLine(); // clear the invalid input from the scanner
+					System.out.println("Invalid Empliyee Id. Please enter valid number: "+e);
+			    }
 			    assetManagement.assignAssetToEmployee(assignAssetId, assignEmployeeId);
 			    break;
 			case 11:
@@ -396,7 +445,7 @@ class Asset {
 	private String purchaseDate;
 	private String warrantyDate;
 	private String purchaseType;
-	private Vendor vendorId;
+	private Vendor vendorDetails;
 	private String status;
 	private Employee employeeId;
 	    
@@ -412,7 +461,7 @@ class Asset {
 		this.purchaseDate = purchaseDate;
 		this.warrantyDate = warrantyDate;
 		this.purchaseType = purchaseType;
-		this.vendorId = vendor;
+		this.vendorDetails = vendor;
 		this.status = "Not assinged";
 	}
 
@@ -421,7 +470,7 @@ class Asset {
 	}
 	
 	public Vendor getVendorId() {
-		return vendorId;
+		return vendorDetails;
 	}
 	public void setEmployee(Employee employee) {
 	    this.employeeId = employee;
@@ -439,7 +488,7 @@ class Asset {
 	public String toString() {
 		return "Asset ID: " + id + "\nCategory: " + category + "\nType: " + type + "\nName: " + name
 				+ "\nModel Number: " + modelNumber + "\nSerial Number: " + serialNumber + "\nPurchase Price: "
-				+ purchasePrice + "\nPurchase Date: " + purchaseDate + "\nWarranty Date: " + warrantyDate + "\nPurchase Type: " + purchaseType + "\nVendor Id: " + vendorId;
+				+ purchasePrice + "\nPurchase Date: " + purchaseDate + "\nWarranty Date: " + warrantyDate + "\nPurchase Type: " + purchaseType + "\nVendor Details: \n" + vendorDetails;
 	}
 }
 class VendorNotFoundException extends Exception {
